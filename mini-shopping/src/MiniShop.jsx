@@ -1,16 +1,12 @@
 // MiniShop.jsx
 import React, { useMemo, useState } from "react";
 import "./MiniShop.css";
-
-const INITIAL_CART = [
-  { id: 1, name: "강아지 간식 세트", price: 12000, qty: 1, checked: true },
-  { id: 2, name: "고양이 장난감", price: 9000, qty: 2, checked: true },
-  { id: 3, name: "기니피그 사료", price: 15000, qty: 1, checked: false },
-];
+import ProductList from "./ProductList";
 
 function MiniShop() {
-  const [step, setStep] = useState("cart"); // cart | checkout | done
-  const [cartItems, setCartItems] = useState(INITIAL_CART);
+  // ① 처음에는 상품목록 페이지부터
+  const [step, setStep] = useState("products"); // products | cart | checkout | done
+  const [cartItems, setCartItems] = useState([]);
   const [shipping, setShipping] = useState({
     name: "",
     phone: "",
@@ -27,6 +23,32 @@ function MiniShop() {
     const total = selected.reduce((sum, i) => sum + i.price * i.qty, 0);
     return { selectedCount: count, selectedTotal: total };
   }, [cartItems]);
+
+  // ② 상품목록에서 "장바구니 담기" 눌렀을 때
+  const handleAddToCart = (product) => {
+    setCartItems((prev) => {
+      const existing = prev.find((item) => item.id === product.id);
+      if (existing) {
+        // 이미 있으면 수량 +1
+        return prev.map((item) =>
+          item.id === product.id
+            ? { ...item, qty: item.qty + 1 }
+            : item
+        );
+      }
+      // 없으면 새로 추가
+      return [
+        ...prev,
+        {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          qty: 1,
+          checked: true,
+        },
+      ];
+    });
+  };
 
   const handleToggleItem = (id) => {
     setCartItems((prev) =>
@@ -78,7 +100,7 @@ function MiniShop() {
   };
 
   const handleGoHome = () => {
-    setStep("cart");
+    setStep("products");
     setAgree(false);
     setShipping({
       name: "",
@@ -93,7 +115,10 @@ function MiniShop() {
       <header className="shop-header">
         <h1 className="shop-title">Gdgoc Mini Shop</h1>
         <p className="breadcrumb">
-          <span className="step-num">01</span> 상품선택 &gt;{" "}
+          <span className={`step ${step === "products" ? "active" : ""}`}>
+            01 상품선택
+          </span>{" "}
+          &gt;{" "}
           <span className={`step ${step === "cart" ? "active" : ""}`}>
             02 장바구니
           </span>{" "}
@@ -108,6 +133,16 @@ function MiniShop() {
         </p>
       </header>
 
+      {/* 01 상품목록 페이지 */}
+      {step === "products" && (
+        <ProductList
+          cartItems={cartItems}
+          onAddToCart={handleAddToCart}
+          onGoCart={() => setStep("cart")}
+        />
+      )}
+
+      {/* 02 장바구니 페이지 */}
       {step === "cart" && (
         <CartPage
           cartItems={cartItems}
@@ -118,9 +153,11 @@ function MiniShop() {
           selectedTotal={selectedTotal}
           deliveryFee={deliveryFee}
           onGoCheckout={handleGoCheckout}
+          onGoProducts={() => setStep("products")}
         />
       )}
 
+      {/* 03 주문/결제 페이지 */}
       {step === "checkout" && (
         <CheckoutPage
           cartItems={cartItems}
@@ -135,6 +172,7 @@ function MiniShop() {
         />
       )}
 
+      {/* 04 주문완료 페이지 */}
       {step === "done" && <DonePage onGoHome={handleGoHome} />}
     </div>
   );
@@ -150,10 +188,17 @@ function CartPage({
   selectedTotal,
   deliveryFee,
   onGoCheckout,
+  onGoProducts,
 }) {
   return (
     <main className="page cart-page">
-      <h2 className="page-title">장바구니</h2>
+      <div className="cart-header-row">
+        <h2 className="page-title">장바구니</h2>
+        <button type="button" className="back-btn" onClick={onGoProducts}>
+          &lt; 상품 더 보러가기
+        </button>
+      </div>
+
       <div className="cart-layout">
         <section className="cart-list">
           {cartItems.length === 0 ? (
@@ -218,7 +263,10 @@ function CartPage({
           <div className="summary-row total-row">
             <span>총 결제금액</span>
             <span>
-              {(selectedTotal + (selectedCount > 0 ? deliveryFee : 0)).toLocaleString()}원
+              {(
+                selectedTotal + (selectedCount > 0 ? deliveryFee : 0)
+              ).toLocaleString()}
+              원
             </span>
           </div>
           <button
