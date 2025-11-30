@@ -7,6 +7,9 @@ const PRODUCTS = [
   { id: 2, name: "고양이 장난감", price: 9000, desc: "냥이 전용 캣토이 세트" },
   { id: 3, name: "기니피그 사료", price: 15000, desc: "기니피그 맞춤 영양 사료" },
   { id: 4, name: "토끼 건초 세트", price: 11000, desc: "향 좋은 티모시 건초" },
+  { id: 5, name: "토끼 건초 세트", price: 11000, desc: "향 좋은 티모시 건초" },
+  { id: 6, name: "토끼 건초 세트", price: 11000, desc: "향 좋은 티모시 건초" },
+  { id: 7, name: "토끼 건초 세트", price: 11000, desc: "향 좋은 티모시 건초" }
 ];
 
 function ProductList({ cartItems, onAddToCart, onGoCart }) {

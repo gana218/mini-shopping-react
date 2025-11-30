@@ -451,10 +451,6 @@ button:disabled {
 }
 
 
-  .summary {
-    position: static;
-  }
-
 /*여기부터는 상품목록 css 임 */
  /* 상품목록 페이지 */
 .product-page {
