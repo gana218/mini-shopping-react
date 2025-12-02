@@ -1,4 +1,6 @@
 // ProductList.jsx
+/.이거그냥 상품목록이랑 내가 만든 장바구니 페이지 연동시켜보려고 만든 페이지임./
+
 import React from "react";
 import "./MiniShop.css";
 
