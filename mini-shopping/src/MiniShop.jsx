@@ -4,8 +4,8 @@ import "./MiniShop.css";
 import ProductList from "./ProductList";
 
 function MiniShop() {
-  // ① 처음에는 상품목록 페이지부터
-  const [step, setStep] = useState("products"); // products | cart | checkout | done
+  // 상품목록 페이지부터
+  const [step, setStep] = useState("products");
   const [cartItems, setCartItems] = useState([]);
   const [shipping, setShipping] = useState({
     name: "",
@@ -24,7 +24,7 @@ function MiniShop() {
     return { selectedCount: count, selectedTotal: total };
   }, [cartItems]);
 
-  // ② 상품목록에서 "장바구니 담기" 눌렀을 때
+  // 상품목록에서 "장바구니 담기" 눌렀을 때
   const handleAddToCart = (product) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item.id === product.id);
